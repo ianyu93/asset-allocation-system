@@ -2,7 +2,7 @@
 
 ## **Preface**
 
-This README documents the concept behind the project, the thought process in each step, how to setup the automated pipeline, and future plan for development. This project was expanded based on stock market analysis with LSTM and intermarket analysis. For more details about initial work, please refer to this [GitHub](https://github.com/ianyu93/stock-market-forecast).
+This README documents the concept behind the project, the thought process in each step, how to setup the automated pipeline, and future plan for development. This project was expanded based on stock market analysis with LSTM and intermarket analysis. For more details about initial work, please refer to this [GitHub repo](https://github.com/ianyu93/stock-market-forecast).
 
 The repository consists of 2 folders:
 
@@ -77,6 +77,8 @@ For asset allocation, based on Modern Portfolio Theory, the typical approach is 
 The AASystem is built on two major financial concepts: **Intermarket Analysis and Efficient Frontier**.
 
 [Intermarket Analysis](https://www.investopedia.com/terms/i/intermarketanalysis.asp#:~:text=Intermarket%20analysis%20is%20a%20method,be%20beneficial%20to%20the%20trader.) is a method of analyzing markets by examining the correlation between different asset classes. The pioneer of the discipline, John J. Murphy, asserts that the four major markets - Stocks, Bonds, Commodity, and Currency - are intercorrelated and can be examined in parallel to gain long-term insights.
+
+
 
 [Efficient Frontier](https://www.investopedia.com/terms/e/efficientfrontier.asp#:~:text=The%20efficient%20frontier%20is%20the,for%20the%20level%20of%20risk.), the cornerstone of the [Modern Portfolio Theory](https://www.investopedia.com/terms/m/modernportfoliotheory.asp), seeks the a set of optimal asset weightings that offer the highest expected return for a defined level of risk or the lowest risk for a given level of expected return. The weighting of different assets does not only consider the expected returns and volatility of each asset, but also the covariance between the assets. 
 
