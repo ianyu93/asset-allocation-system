@@ -2,7 +2,7 @@
 
 ## **Preface**
 
-This README documents the concept behind the project, the thought process in each step, how to setup the automated pipeline, and future plan for development.
+This README documents the concept behind the project, the thought process in each step, how to setup the automated pipeline, and future plan for development. This project was expanded based on stock market analysis with LSTM and intermarket analysis. For more details about initial work, please refer to this [GitHub](https://github.com/ianyu93/stock-market-forecast).
 
 The repository consists of 2 folders:
 
