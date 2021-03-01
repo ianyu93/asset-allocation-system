@@ -7,7 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import Sequential
 from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense, Dropout, Activation, Bidirectional,TimeDistributed
+from tensorflow.keras.layers import Dense, Dropout, Activation, Bidirectional,TimeDistributed, RepeatVector
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras.metrics import RootMeanSquaredError
@@ -111,14 +111,43 @@ class HyperTuningModel():
             values = [1,10,100,30,60,90]
             )
 
-        # Defining the layer, input_shape is (sequence, features)
-        # Return sequence to pass through TimeDistributedDense layer
+        # Defining the encoder, input_shape is (sequence, features)
         model.add(Bidirectional(LSTM(
             units = LSTM_units1, 
             activation='relu',
             input_shape = (sequence1,X_train_mms.shape[1]),
+            return_sequences=False
+            )))
+
+        # Repeat Vector as a bridge between encoder and decoder
+        model.add(RepeatVector(1))
+
+
+
+        ## Bidirectional LSTM Layer, tune LSTM_units and sequence for input_shape
+        # Parameters for tunining the number of units
+        LSTM_units2 = hp.Int(
+            'LSTM_units2', 
+            min_value = 32, 
+            max_value = 1024, 
+            step = 32
+            )
+        
+        # Parameters for tuning the number of input sequence
+        sequence2 = hp.Choice(
+            'sequence2', 
+            values = [1,10,100,30,60,90]
+            )
+
+        # Defining the decoder, input_shape is (sequence, features)
+        # Return sequence to pass through TimeDistributedDense layer
+        model.add(Bidirectional(LSTM(
+            units = LSTM_units2, 
+            activation='relu',
+            input_shape = (sequence2,X_train_mms.shape[1]),
             return_sequences=True
             )))
+
 
         # TimeDistributedDense Layer to keep input one timestamp at a time
         model.add(TimeDistributed(Dense(1)))
@@ -246,7 +275,7 @@ class HyperTuningModel():
                 model_builder,
                 kt.Objective("val_root_mean_squared_error", direction="min"),
                 max_trials = 10,
-                project_name = f"trials/{name}_trial-{n}"
+                project_name = f"trials/"
                     )
 
             # Set tuner to search for the best parameter for the given 3-D train and validation set

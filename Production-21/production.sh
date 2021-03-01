@@ -7,4 +7,5 @@ python feature-engineering.py "10YR yields" "10YR yields Today" "10YR"
 make hypertune
 make train
 make prediction
-cp prediction/*.csv ../../app/prediction
+cp prediction/*.csv ../../aasystem-app/prediction
+

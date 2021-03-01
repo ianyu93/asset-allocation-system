@@ -57,7 +57,7 @@ gold = gold[['USD (AM)']].fillna(method='ffill').rename(columns={'USD (AM)': 'pr
 # Consumer Price Index
 # CPI drop the first four years as they are all NaN values and set 2020 annual inflation to 1.1
 cpi = cpi.dropna()
-cpi2 = pd.DataFrame(index=['2020-01-01'], columns=['annual rate'], data=[1.1])
+cpi2 = pd.DataFrame(index=['2021-01-01'], columns=['annual rate'], data=[1.1])
 cpi2.index = pd.to_datetime(cpi2.index)
 cpi = cpi.append(cpi2)
 

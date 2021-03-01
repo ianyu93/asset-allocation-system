@@ -6,7 +6,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import Sequential
 from tensorflow.keras import layers
-from tensorflow.keras.layers import Dense, Dropout, Activation, Bidirectional,TimeDistributed
+from tensorflow.keras.layers import Dense, Dropout, Activation, Bidirectional,TimeDistributed, RepeatVector
 from tensorflow.keras.layers import LSTM
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras.metrics import RootMeanSquaredError
@@ -92,14 +92,26 @@ def training_model(best_param, Xtrain, ytrain):
     ## Modeling with sequential
     model = keras.Sequential()
 
-    ## Building Bidrectional LSTM RNN
+    ## Building Bidrectional LSTM RNN Encoder
     # Configuration from param
-    # Return sequence to pass through TimeDistributedDense layer
     # Input shape logic is (sequence, features)
     model.add(Bidirectional(LSTM(
         units = param['LSTM_units1'], 
         activation='relu',
         input_shape = (param['sequence1'],Xtrain.shape[1]),
+        return_sequences=False)))
+    
+    # Parameters for tuning the number of input sequence
+    model.add(RepeatVector(1))
+
+    ## Building Bidrectional LSTM RNN Decoder
+    # Configuration from param
+    # Return sequence to pass through TimeDistributedDense layer
+    # Input shape logic is (sequence, features)
+    model.add(Bidirectional(LSTM(
+        units = param['LSTM_units2'], 
+        activation='relu',
+        input_shape = (param['sequence2'],Xtrain.shape[1]),
         return_sequences=True)))
 
     # TimeDistributedDense Layer to keep input one timestamp at a time
