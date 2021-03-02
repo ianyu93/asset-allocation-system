@@ -33,6 +33,11 @@ class ClearTrainingOutput(tf.keras.callbacks.Callback):
     def on_train_end(*args, **kwargs):
         IPython.display.clear_output(wait = True)
 
+er = EarlyStopping(
+    monitor='val_root_mean_squared_error',
+    patience=5
+    )
+
 
 class HyperTuningModel():
 
@@ -100,54 +105,38 @@ class HyperTuningModel():
         # Parameters for tunining the number of units
         LSTM_units1 = hp.Int(
             'LSTM_units1', 
-            min_value = 32, 
-            max_value = 1024, 
-            step = 32
+            min_value = 8, 
+            max_value = 256, 
+            step = 8
             )
         
         # Parameters for tuning the number of input sequence
-        sequence1 = hp.Choice(
-            'sequence1', 
-            values = [1,10,100,30,60,90]
+        sequence = hp.Int(
+            'sequence', 
+            min_value = 1, 
+            max_value = 200, 
+            step = 1
             )
 
         # Defining the encoder, input_shape is (sequence, features)
         model.add(Bidirectional(LSTM(
             units = LSTM_units1, 
             activation='relu',
-            input_shape = (sequence1,X_train_mms.shape[1]),
+            input_shape = (sequence,X_train_mms.shape[1]),
             return_sequences=False
             )))
 
         # Repeat Vector as a bridge between encoder and decoder
         model.add(RepeatVector(1))
 
-
-
-        ## Bidirectional LSTM Layer, tune LSTM_units and sequence for input_shape
-        # Parameters for tunining the number of units
-        LSTM_units2 = hp.Int(
-            'LSTM_units2', 
-            min_value = 32, 
-            max_value = 1024, 
-            step = 32
-            )
-        
-        # Parameters for tuning the number of input sequence
-        sequence2 = hp.Choice(
-            'sequence2', 
-            values = [1,10,100,30,60,90]
-            )
-
         # Defining the decoder, input_shape is (sequence, features)
         # Return sequence to pass through TimeDistributedDense layer
         model.add(Bidirectional(LSTM(
-            units = LSTM_units2, 
+            units = LSTM_units1, 
             activation='relu',
-            input_shape = (sequence2,X_train_mms.shape[1]),
+            input_shape = (sequence,X_train_mms.shape[1]),
             return_sequences=True
             )))
-
 
         # TimeDistributedDense Layer to keep input one timestamp at a time
         model.add(TimeDistributed(Dense(1)))
@@ -271,20 +260,24 @@ class HyperTuningModel():
             # Finding the best result for Root Mean Squared Error for the validation set as the objective
             # Maximum number of trials is 10
             # Project name logic "{name of the target}_trial-{nth split}" 
+
+            os.mkdir(f"trials/{name}_{n}/")
+
             tuner = kt.BayesianOptimization(
                 model_builder,
                 kt.Objective("val_root_mean_squared_error", direction="min"),
-                max_trials = 10,
-                project_name = f"trials/"
+                max_trials = 3,
+                directory=os.path.normpath('C:/'),
+                project_name = f"trials/{name}_{n}/0"
                     )
 
             # Set tuner to search for the best parameter for the given 3-D train and validation set
             tuner.search(
                 Xtrain, ytrain, 
-                epochs = 30, 
+                epochs = 1000, 
                 validation_data = (Xvalidation, yvalidation), 
                 verbose = 2, 
-                callbacks = [ClearTrainingOutput()]
+                callbacks = [ClearTrainingOutput(), er]
                 )  
             
             # Collect a list of best models

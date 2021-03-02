@@ -98,7 +98,7 @@ def training_model(best_param, Xtrain, ytrain):
     model.add(Bidirectional(LSTM(
         units = param['LSTM_units1'], 
         activation='relu',
-        input_shape = (param['sequence1'],Xtrain.shape[1]),
+        input_shape = (param['sequence'],Xtrain.shape[1]),
         return_sequences=False)))
     
     # Parameters for tuning the number of input sequence
@@ -109,9 +109,9 @@ def training_model(best_param, Xtrain, ytrain):
     # Return sequence to pass through TimeDistributedDense layer
     # Input shape logic is (sequence, features)
     model.add(Bidirectional(LSTM(
-        units = param['LSTM_units2'], 
+        units = param['LSTM_units1'], 
         activation='relu',
-        input_shape = (param['sequence2'],Xtrain.shape[1]),
+        input_shape = (param['sequence'],Xtrain.shape[1]),
         return_sequences=True)))
 
     # TimeDistributedDense Layer to keep input one timestamp at a time
@@ -133,6 +133,7 @@ def training_model(best_param, Xtrain, ytrain):
     # Define early stopping, monitoring loss function, stops if not improving for five times in a row
     es = EarlyStopping(
         monitor='loss', 
+        min_delta=1,
         patience = 5, 
         verbose=0, 
         mode='auto'

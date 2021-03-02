@@ -125,7 +125,7 @@ validation_data = df.copy()
 ## Shifting values back at least 21 trading days 
 # For every column in the column list
 for c in column_list:
-    for n in (21,42,63):      
+    for n in (21,22,23, 24):      
         # Shift the data back 21, 42, and 63 trading days, and name the new column with value name and n day lag
         training[f'{c} {n} Day Lag'] = training[f'{c}'].shift(n)
     # Dropping the original columns so that we are left with lagged data except the target
@@ -134,7 +134,7 @@ for c in column_list:
 ## Shifting values back with the same interval as training data, to predict the future with the latest data
 # For every column in the column list
 for c in column_list:
-    for n in (0, 21, 42):      
+    for n in (0, 21, 22, 23):      
         # Shift the data back 0, 21, and 42 trading days, and name the new column with value name and n day lag
         validation_data[f'{c} {n} Day Lag'] = validation_data[f'{c}'].shift(n)
     # Dropping the original columns so that we do not have the same day value left

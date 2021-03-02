@@ -8,4 +8,3 @@ make hypertune
 make train
 make prediction
 cp prediction/*.csv ../../aasystem-app/prediction
-
