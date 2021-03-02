@@ -32,7 +32,7 @@ df.index = pd.to_datetime(df.index)
 class ClearTrainingOutput(tf.keras.callbacks.Callback):
     def on_train_end(*args, **kwargs):
         IPython.display.clear_output(wait = True)
-
+# Early stopping to prevent overfitting
 er = EarlyStopping(
     monitor='val_root_mean_squared_error',
     patience=5
@@ -101,6 +101,10 @@ class HyperTuningModel():
         Define a model architecture as well as the parameters to hypertune
         '''
         model = keras.Sequential()
+
+        ####################
+        # Model Parameters #
+        ####################
         ## Bidirectional LSTM Layer, tune LSTM_units and sequence for input_shape
         # Parameters for tunining the number of units
         LSTM_units1 = hp.Int(
@@ -117,6 +121,10 @@ class HyperTuningModel():
             max_value = 200, 
             step = 1
             )
+
+        #######################
+        # Model Archietecture #
+        #######################
 
         # Defining the encoder, input_shape is (sequence, features)
         model.add(Bidirectional(LSTM(
