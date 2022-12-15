@@ -30,7 +30,7 @@ df.index = pd.to_datetime(df.index)
 # Define a callback to clear the training outputs at the end of every training step.
 # Code from https://www.tensorflow.org/tutorials/keras/keras_tuner
 class ClearTrainingOutput(tf.keras.callbacks.Callback):
-    def on_train_end(*args, **kwargs):
+    def on_train_end(self, **kwargs):
         IPython.display.clear_output(wait = True)
 # Early stopping to prevent overfitting
 er = EarlyStopping(
@@ -245,7 +245,7 @@ class HyperTuningModel():
         ## Create number of steps based on number of splits to hypertune on the last few splits onlny
         # Range of numbers, the first number is the split to start with, as there is no point to start with the very first split
         # len(timestep) would return the number of splits, in effect returning the last split
-        n_step = list(range(start_split,len(timestep),1))
+        n_step = list(range(start_split, len(timestep)))
 
         ## Create lists to get models, parameters, and metrics score for each split
         model_list = []
@@ -258,7 +258,7 @@ class HyperTuningModel():
             # Reshape logic for X is (total number of data points, length of array of the last dimension, features) 
             Xtrain = np.array(X_train_mms.iloc[timestep[0][n]]).reshape(np.array(X_train_mms.iloc[timestep[0][n]]).shape[0],-1,X_train_mms.shape[1])
             Xvalidation = np.array(X_train_mms.iloc[timestep[1][n]]).reshape(np.array(X_train_mms.iloc[timestep[1][n]]).shape[0],-1,X_train_mms.shape[1])
-            
+
             # Reshape logic for y is (total number of data points, length of array of the last dimension, features)
             ytrain = np.array(y_train.iloc[timestep[0][n]]).reshape(np.array(y_train.iloc[timestep[0][n]]).shape[0],-1,1)
             yvalidation = np.array(y_train.iloc[timestep[1][n]]).reshape(np.array(y_train.iloc[timestep[1][n]]).shape[0],-1,1)
@@ -287,7 +287,7 @@ class HyperTuningModel():
                 verbose = 2, 
                 callbacks = [ClearTrainingOutput(), er]
                 )  
-            
+
             # Collect a list of best models
             best_models = tuner.get_best_models(num_models = 1)
 

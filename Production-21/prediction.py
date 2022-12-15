@@ -61,7 +61,7 @@ def preprocessing(train_df, val_df, test_size, target, date_range):
         columns = X_train.columns,
         index = train.index
         )
-    
+
     # Tranform the test set with mmscaler
     X_test_mms = pd.DataFrame(
         data = mmscaler.transform(X_test),
@@ -69,25 +69,20 @@ def preprocessing(train_df, val_df, test_size, target, date_range):
         index = date_range
         )
 
-    # X is the array of validation data with the features of the latest 63 trading days in 3D shape
-    X = np.array(X_test_mms).reshape(np.array(X_test_mms).shape[0],-1,X_test.shape[1])
-
-    # Return X
-    return X
+    return np.array(X_test_mms).reshape(
+        np.array(X_test_mms).shape[0], -1, X_test.shape[1]
+    )
 
 def prediction(model, X, date_range, asset):
     '''
     A function that takes in a 3D shape array, pass through the model to evaluate, 
     reasign the index as the time the model is predicting, and return a dataframe of predicted values
     '''
-    # Create a dataframe with predicted values evaluated by the model, reshaped into 2D
-    # Index is the date_range, pred column named after the target asset
-    pred = pd.DataFrame(
-        data = (model.predict(X).reshape(X.shape[0],-1)), 
-        index = date_range,
-        columns = [f'{asset}']
-        )
-    return pred
+    return pd.DataFrame(
+        data=(model.predict(X).reshape(X.shape[0], -1)),
+        index=date_range,
+        columns=[f'{asset}'],
+    )
 
 ################ Prediction ################
 # Date range is starting from tomorrow, as the model predicts the next day of the last valid value

@@ -66,11 +66,11 @@ cpi = cpi.append(cpi2)
 ## Reindexing
 # Creating a date range of our interest, 20 years worth of data is kept, in frequency of business day, in daily values format
 date_range = pd.date_range(
-    start = (datetime.today()-timedelta(days = 7300)), 
-    end = (datetime.today()), 
-    freq = 'B', 
-    normalize = True
-    )
+    start=datetime.now() - timedelta(days=7300),
+    end=datetime.now(),
+    freq='B',
+    normalize=True,
+)
 
 # Reindexing with forward fill to fill new missing values with last valid observation
 stock = stock.reindex(index=date_range, method='ffill')
