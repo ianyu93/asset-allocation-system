@@ -117,7 +117,7 @@ def training_model(best_param, Xtrain, ytrain):
         loss = 'mse', 
         metrics = 'RootMeanSquaredError'
         )
-    
+
     # Define early stopping, monitoring loss function, stops if not improving for five times in a row
     es = EarlyStopping(
         monitor='loss', 
@@ -137,16 +137,9 @@ def training_model(best_param, Xtrain, ytrain):
         save_freq="epoch"
         )
 
-    # Fit the model with 1000 epochs
-    history = model.fit(
-        Xtrain, ytrain, 
-        epochs = 1000, 
-        verbose = 2, 
-        callbacks = [es,mc]
-        )
-
-    # Return history of model.fit
-    return history
+    return model.fit(
+        Xtrain, ytrain, epochs=1000, verbose=2, callbacks=[es, mc]
+    )
 
 ################ Training ################
 
